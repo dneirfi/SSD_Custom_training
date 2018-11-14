@@ -1,0 +1,26 @@
+<annotation>
+	<folder>images</folder>
+	<filename>c13.jpg</filename>
+	<path>/home/shinyeong/work/SSD_training/models/research/object_detection/images/c13.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>1040</width>
+		<height>585</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>car</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>180</xmin>
+			<ymin>65</ymin>
+			<xmax>973</xmax>
+			<ymax>544</ymax>
+		</bndbox>
+	</object>
+</annotation>

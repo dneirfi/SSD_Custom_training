@@ -1,0 +1,26 @@
+<annotation>
+	<folder>train</folder>
+	<filename>23.jpeg</filename>
+	<path>/home/shinyeong/work/SSD_training/Object_Detection/images/train/23.jpeg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>275</width>
+		<height>183</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>traffic light</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>88</xmin>
+			<ymin>75</ymin>
+			<xmax>120</xmax>
+			<ymax>131</ymax>
+		</bndbox>
+	</object>
+</annotation>
