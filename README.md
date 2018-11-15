@@ -2,28 +2,30 @@
 ssd custom training using Tensorflow object detection api
 ## 자동화 방법 연구중
 
-1. 환경
+gitlab 주소 
+http://183.99.77.136:8400/synoh/SSD_custom_training.git
+(참고용, 밑의 2번에서 Train 방법 처음부터 설명)
+환경
 OS : ubuntu 16.04
 python version : 3.5.2
 CUDA version : 9.0
 cuDNN version : 7.0.5
 tensorflow version : 1.12.0
 tensorboard : 1.12.0
-
-2. Train ( SSD_Train.pptx)
-###필요 패키지 설치 
+Train ( SSD_Train.pptx)
+\필요 패키지 설치 
 https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md
 
-cd SSD_custom_training
+cd SSD_training
 
-### tensorflow, tensorboard 설치 
+# tensorflow, tensorboard 설치 
 sudo pip install tensorflow-gpu==1.12.0
 sudo pip install tensorboard==1.12.0
 git clone https://github.com/tensorflow/models# Clone Tensorflow models
 
 
 
-### coco api 설치(optional)
+# coco api 설치(optional)
 cd SSD_custom_training
 git clone https://github.com/cocodataset/cocoapi.git
  
@@ -31,28 +33,23 @@ cd cocoapi/PythonAPI
 make
 cp -r pycocotools <path_to_tensorflow>/models/research/
 ( prococotools는 Object Detection 모델을  evaluation할 때 사용하는 evaluation metrics로 사용된다. 이 후 coco evaluation metrics를 사용하지 않더라도, tensorflow object detection api 는 내부적으로 coco evaluation metrics를 기본으로 사용하기때문에 설치)
-
-### Protobuf 컴파일(models/research) 
+# Protobuf 컴파일(models/research) 
  ( /models/research/)
 protoc object_detection/protos/*.proto --python_out=.
 (((Note: If you're getting errors while compiling, you might be using an incompatible protobuf compiler. If that's the case, use the following manual installation
 Download and install the 3.0 release of protoc, then unzip the file.
-
-### From tensorflow/models/research/
+# From tensorflow/models/research/
 wget -O protobuf.zip https://github.com/google/protobuf/releases/download/v3.0.0/protoc-3.0.0-linux-x86_64.zip
 unzip protobuf.zip
 Run the compilation process again, but use the downloaded version of protoc
-
-### From tensorflow/models/research/
+# From tensorflow/models/research/
 ./bin/protoc object_detection/protos/*.proto --python_out=.
 )))
-
-###PYTHONPATH 라이브러리 추가 (.bashrc에 추가 안할 경우 새 터미널 창마다 PYTHONPATH 라이브러리 추가해주어야함) 
+#PYTHONPATH 라이브러리 추가 (.bashrc에 추가 안할 경우 새 터미널 창마다 PYTHONPATH 라이브러리 추가해주어야함) 
 (/models/research/)
 export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
 Tensorflow Object Detection API 가 python 3.x 버전에서 많은 오류 발생 → tensorflow/models github repo 의 issues에서 오류찾아 해결가능
-
-###입력 데이터 준비
+입력 데이터 준비
 SSD_Train_방법.pptx 의 "Training Dataset 준비하기" 참고
 (models/research/object_detection/ )
 
@@ -68,12 +65,12 @@ w키로 바운딩박스 만들고 ctrl+s 로 저장하면 xml파일이 생성된
 
 
 
-Xml 파일을 TFRecord파일로 변환.(models/research/object_detection/ )
+Xml 파일을 TFRecord파일로 변환.(models/research/object_detection)
 
 git clone https://github.com/datitran/raccoon_dataset
-*.xml파일들의 데이터를 하나의 csv파일로 변환하기 위해 xml_to_csv.py스크립트를 수정(models/research/object_detection/ )
+*.xml파일들의 데이터를 하나의 csv파일로 변환하기 위해 xml_to_csv.py스크립트를 수정(models/research/object_detection/ raccoon_dataset)
 
-
+racoon_dataset 안의 images 폴더를 삭제하고 object_detection의 images폴더를 복사 하여 넣는다.
 
 python3 xml_to_csv.py
 
@@ -82,7 +79,7 @@ python3 xml_to_csv.py
 
 
 
-csv파일을 TFRecord파일로 변환하기 위해  generate_tfrecord.py 스크립트를 수정(models/research/object_detection/ )
+csv파일을 TFRecord파일로 변환하기 위해  generate_tfrecord.py 스크립트를 수정(models/research/object_detection/ raccoon_dataset)
 
 
 
@@ -101,6 +98,7 @@ wget http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_coc
 (object_detection/) data 디렉토리 안에 object-detection.pbtxt 파일 추가 및 수정
 
 
+object_detetction/raccoon_dataset/ 의 data폴더를 object_detection 으로 빼기
 Training
 (models/research/object_detection/) 
 
@@ -111,18 +109,28 @@ tensorboard --logdir=./training
 Exporting the Tensorflow Graph
 (models/research/object_detection/) 
 
-python export_inference_graph.py \
+python3 export_inference_graph.py \
 --input_type image_tensor \
 --pipeline_config_path training/ssd_mobilenet_v1_pets.config \
 --trained_checkpoint_prefix training/model.ckpt-{CHECKPOINT_NUMBER} \
 --output_directory inference_graph_trafficlight_car
 
 (trained_checkpoint_prefix 는 checkpoint_number 확인 후 알맞게 수정, output_directory 이름은 학습시킬 class에 맞게 수정)
+(checkpoint_number 은 object_detection/training 에서 확인가능)
+결과
+
 
 Test
 (models/research/object_detection/test_images/) 테스트 하고자 하는 이미지들을 image{number}.jpg 로 저장
 jupyter notebook 실행 후 (object_detection/)object_detection_tutorial.ipynb 실행 하면 test_images 의 이미지들 실행 결과 확인 가능
 
+object_detection_tutorial.ipynb 의 코드 몇몇 부분 알맞게 수정해야함. 
+
+
+
+download model 부분은 삭제
+
+결과
 
 
 번외 
